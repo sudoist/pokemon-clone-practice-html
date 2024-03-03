@@ -325,6 +325,7 @@
                     console.log("battle over");
                     $("#options").hide();
                     $("#dialogue-text").text("Game Over. Would you like to play again?");
+                    $("#dialogue").attr("href", pathname.replace("battle", "index"));
                     $("#dialogue").show();
                 }
             });
