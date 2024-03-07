@@ -257,7 +257,7 @@
         }
 
         function useSkill(id, player, currentEnemyHp, enemyHp) {
-            let damage = player.skills[0].damage;
+            let damage = player.skills[id-1].damage;
             console.log("skill-" + id);
             console.log("Skill " + id + " clicked name :" + $("#skill-" + id).attr("data-s" + id + "n"));
             console.log("Skill " + id + " clicked skill point :" + $("#skill-" + id).attr("data-s" + id + "sp"));
@@ -336,7 +336,7 @@
             $("#player-packet").attr("data-pcp", player.name);
 
             // Init skills
-            initializeSkills();
+            initializeSkills(player);
 
             // Dialogue window actions
             $("#dialogue").on("click", function (e) {
@@ -713,7 +713,7 @@
         return packets;
     }
 
-    function initializeSkills() {
+    function initializeSkills(player) {
         $("#skill-1").attr("data-s1n", player.skills[0].name);
         $("#skill-1").attr("data-s1sp", player.skills[0].sp);
         $("#skill-1").text(player.skills[0].name + " - " + player.skills[0].sp);
