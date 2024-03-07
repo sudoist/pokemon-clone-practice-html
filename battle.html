@@ -155,6 +155,10 @@
                 <div class="w-1/2">
                     <a href="#" id="skill-2" data-s2n="" data-s2sp=""></a>
                 </div>
+
+            </div>
+
+            <div class="flex w-full mt-2 px-6">
                 <div class="w-1/2">
                     <a href="#" id="skill-3" data-s3n="" data-s3sp=""></a>
                 </div>
@@ -163,6 +167,14 @@
                 </div>
 
             </div>
+
+            <div class="w-full mt-2 px-6 text-right">
+                <div class="w-100">
+                    <a href="#" onclick="backToMainMenu()">Back</a>
+                </div>
+
+            </div>
+
 
         </div>
 
@@ -257,7 +269,7 @@
         }
 
         function useSkill(id, player, currentEnemyHp, enemyHp) {
-            let damage = player.skills[id-1].damage;
+            let damage = player.skills[id - 1].damage;
             console.log("skill-" + id);
             console.log("Skill " + id + " clicked name :" + $("#skill-" + id).attr("data-s" + id + "n"));
             console.log("Skill " + id + " clicked skill point :" + $("#skill-" + id).attr("data-s" + id + "sp"));
@@ -299,6 +311,14 @@
             }
 
             return currentEnemyHp;
+        }
+
+        // Navigation
+        function backToMainMenu() {
+            $("#options").show();
+            $("#skills").hide();
+            $("#dialogue").hide();
+
         }
 
         $(document).ready(function () { // Initialize packets in play
