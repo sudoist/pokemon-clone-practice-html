@@ -104,6 +104,35 @@
             </div>
         </a>
 
+        <a href="#" id="restart">
+            <div id="restart-container" class="hidden mt-2 flex rounded-lg border border border-gray-900/25 px-6 py-10">
+
+                <div class="mt-2 px-6 py-10">
+
+                    <div class="text-center mr-24">
+
+                        <p id="restart-text" class="text-lg leading-5 text-gray-600">
+                            Game Over. Would you like to play again?
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="mt-2 px-6 py-10">
+
+                    <div class="text-center mr-24">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="float-right animate-bounce w-6 h-6">
+                             
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                        </svg>
+                    </div>
+
+                </div>
+            </div>
+        </a>
+
         <div id="options" class="hidden mt-2 flex rounded-lg border border border-gray-900/25 px-6 py-10">
 
             <div class="flex w-full mt-2 px-6">
@@ -219,7 +248,7 @@
 
         function getSelectedPacket(type) {
             const searchParams = new URLSearchParams(window.location.search);
-            let id = Math.random() * 5; // Random id								
+            let id = Math.random() * 5; // Random id
             console.log(searchParams.has(type));
             if (searchParams.has(type)) {
                 id = searchParams.get(type);
@@ -324,9 +353,9 @@
                 if ($(this).attr("data-fight") == "over") {
                     console.log("battle over");
                     $("#options").hide();
-                    $("#dialogue-text").text("Game Over. Would you like to play again?");
-                    $("#dialogue").attr("href", pathname.replace("battle", "index"));
-                    $("#dialogue").show();
+                    $("#dialogue").hide();
+                    $("#restart").attr("href", window.location.pathname.replace("battle", "index"));
+                    $("#restart-container").removeClass("hidden");
                 }
             });
 
