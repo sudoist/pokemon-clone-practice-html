@@ -150,16 +150,16 @@
 
             <div class="flex w-full mt-2 px-6">
                 <div class="w-1/2">
-                    <a href="#" id="skill-1" data-s1n="Tackle" data-s1sp="8">Tackzzle - 8</a>
+                    <a href="#" id="skill-1" data-s1n="" data-s1sp="8"></a>
                 </div>
                 <div class="w-1/2">
-                    <a href="#" id="skill-2" data-s2n="Noodle Whip" data-s2sp="6">Noodle Whip - 6</a>
+                    <a href="#" id="skill-2" data-s2n="" data-s2sp="6"></a>
                 </div>
                 <div class="w-1/2">
-                    <a href="#" id="skill-3" data-s3n="Chili Powder Blow" data-s3sp="4">Chili Powder Blow - 4</a>
+                    <a href="#" id="skill-3" data-s3n="" data-s3sp="4"></a>
                 </div>
                 <div class="w-1/2">
-                    <a href="#" id="skill-4" data-s4n="Razor Plastic" data-s4sp="4">Razor Plastic - 4</a>
+                    <a href="#" id="skill-4" data-s4n="" data-s4sp="4"></a>
                 </div>
 
             </div>
@@ -255,6 +255,52 @@
             }
             return id;
         }
+
+        function useSkill(id, player, currentEnemyHp, enemyHp) {
+            let damage = player.skills[0].damage;
+            console.log("skill-" + id);
+            console.log("Skill " + id + " clicked name :" + $("#skill-" + id).attr("data-s" + id + "n"));
+            console.log("Skill " + id + " clicked skill point :" + $("#skill-" + id).attr("data-s" + id + "sp"));
+            $("#skills").toggle().attr("data-fight", "selecting skill");
+            // Update dialogue
+            $("#dialogue").toggle().attr("data-fight", "selecting skill");
+            $("#dialogue-text").text($("#player-packet").text() + " used " + $("#skill-" + id).attr("data-s" + id + "n") + "!");
+            // Deduct skill
+            if ($("#skill-" + id).attr("data-s" + id + "sp") > 0) {
+                const updatedSkillPoint = $("#skill-" + id).attr("data-s" + id + "sp") - 1;
+                $("#skill-" + id).attr("data-s" + id + "sp", updatedSkillPoint).text($("#skill-" + id).attr("data-s" + id + "n") + " - " + updatedSkillPoint);
+                // Animate attack
+                $("#enemy").addClass("animate-pulse");
+                $("#player").addClass("animate-bounce");
+                if (updatedSkillPoint == 0) {
+                    $("#skill-" + id).addClass("text-red-400").attr("id", "skill-" + id + "-disabled");
+                } // Compute damage
+                console.log("currentEnemyHp")
+                console.log(currentEnemyHp)
+                console.log(damage)
+                currentEnemyHp = currentEnemyHp - damage;
+                $("#enemy-hpt").html("HP " + currentEnemyHp + "/" + enemyHp);
+                // Refresh hearts/hp meter
+                printHearts("enemy", currentEnemyHp);
+                changeDamagedHeartsColor("enemy", currentEnemyHp);
+                // Setup enemy turn						
+                $("#dialogue").show().attr("data-fight", "enemy");
+                // Enemy defeated
+                if (currentEnemyHp < 1) {
+                    currentEnemyHp = 0;
+                    console.log(currentEnemyHp);
+                    console.log("defeated");
+                    $("#skills").hide().attr("data-fight", "close options battle over");
+                    $("#dialogue").show().attr("data-fight", "over");
+                    $("#dialogue-text").text($("#enemy-packet").text() + " has been defeated!");
+                }
+            } else {
+                $("#dialogue-text").text("Unable to use " + $("#skill-" + id).attr("data-s" + id + "n") + ", not enough skill points!");
+            }
+
+            return currentEnemyHp;
+        }
+
         $(document).ready(function () { // Initialize packets in play
 
             // TODO: Debuffs have 40% to hit				
@@ -364,47 +410,22 @@
                 $("#options").toggle().attr("data-fight", "selecting skill");
                 $("#skills").toggle().attr("data-fight", "selecting skill window open");
             }); // TODO: Check turn on who attacks first. Now player goes first but take into account the speed stat later.
-            // Activating skills in battle				
+
+            // Activating skills in battle
             $("#skill-1").on("click", function (e) {
-                let damage = player.skills[0].damage;
-                console.log("Skill 1 clicked name :" + $(this).attr("data-s1n"));
-                console.log("Skill 1 clicked skill point :" + $(this).attr("data-s1sp"));
-                $("#skills").toggle().attr("data-fight", "selecting skill");
-                // Update dialogue
-                $("#dialogue").toggle().attr("data-fight", "selecting skill");
-                $("#dialogue-text").text($("#player-packet").text() + " used " + $(this).attr("data-s1n") + "!");
-                // Deduct skill
-                if ($(this).attr("data-s1sp") > 0) {
-                    const updatedSkillPoint = $(this).attr("data-s1sp") - 1;
-                    $("#skill-1").attr("data-s1sp", updatedSkillPoint).text($(this).attr("data-s1n") + " - " + updatedSkillPoint);
-                    // Animate attack
-                    $("#enemy").addClass("animate-pulse");
-                    $("#player").addClass("animate-bounce");
-                    if (updatedSkillPoint == 0) {
-                        $("#skill-1").addClass("text-red-400").attr("id", "skill-1-disabled");
-                    } // Compute damage
-                    console.log("currentEnemyHp")
-                    console.log(currentEnemyHp)
-                    console.log(damage)
-                    currentEnemyHp = currentEnemyHp - damage;
-                    $("#enemy-hpt").html("HP " + currentEnemyHp + "/" + enemyHp);
-                    // Refresh hearts/hp meter
-                    printHearts("enemy", currentEnemyHp);
-                    changeDamagedHeartsColor("enemy", currentEnemyHp);
-                    // Setup enemy turn						
-                    $("#dialogue").show().attr("data-fight", "enemy");
-                    // Enemy defeated
-                    if (currentEnemyHp < 1) {
-                        currentEnemyHp = 0;
-                        console.log(currentEnemyHp);
-                        console.log("defeated");
-                        $("#skills").hide().attr("data-fight", "close options battle over");
-                        $("#dialogue").show().attr("data-fight", "over");
-                        $("#dialogue-text").text($("#enemy-packet").text() + " has been defeated!");
-                    }
-                } else {
-                    $("#dialogue-text").text("Unable to use " + $(this).attr("data-s1n") + ", not enough skill points!");
-                }
+                currentEnemyHp = useSkill(1, player, currentEnemyHp, enemyHp);
+            });
+
+            $("#skill-2").on("click", function (e) {
+                currentEnemyHp = useSkill(2, player, currentEnemyHp, enemyHp);
+            });
+
+            $("#skill-3").on("click", function (e) {
+                currentEnemyHp = useSkill(3, player, currentEnemyHp, enemyHp);
+            });
+
+            $("#skill-4").on("click", function (e) {
+                currentEnemyHp = useSkill(4, player, currentEnemyHp, enemyHp);
             });
         })
     </script>
