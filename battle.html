@@ -150,16 +150,16 @@
 
             <div class="flex w-full mt-2 px-6">
                 <div class="w-1/2">
-                    <a href="#" id="skill-1" data-s1n="" data-s1sp="8"></a>
+                    <a href="#" id="skill-1" data-s1n="" data-s1sp=""></a>
                 </div>
                 <div class="w-1/2">
-                    <a href="#" id="skill-2" data-s2n="" data-s2sp="6"></a>
+                    <a href="#" id="skill-2" data-s2n="" data-s2sp=""></a>
                 </div>
                 <div class="w-1/2">
-                    <a href="#" id="skill-3" data-s3n="" data-s3sp="4"></a>
+                    <a href="#" id="skill-3" data-s3n="" data-s3sp=""></a>
                 </div>
                 <div class="w-1/2">
-                    <a href="#" id="skill-4" data-s4n="" data-s4sp="4"></a>
+                    <a href="#" id="skill-4" data-s4n="" data-s4sp=""></a>
                 </div>
 
             </div>
@@ -335,19 +335,9 @@
             $("#player-packet").html(player.name);
             $("#player-packet").attr("data-pcp", player.name);
 
-            // Skills				
-            $("#skill-1").attr("data-s1n", player.skills[0].name);
-            $("#skill-1").attr("data-s1sp", player.skills[0].sp);
-            $("#skill-1").text(player.skills[0].name + " - " + player.skills[0].sp);
-            $("#skill-2").attr("data-s1n", player.skills[1].name);
-            $("#skill-2").attr("data-s1sp", player.skills[1].sp);
-            $("#skill-2").text(player.skills[1].name + " - " + player.skills[1].sp);
-            $("#skill-3").attr("data-s1n", player.skills[2].name);
-            $("#skill-3").attr("data-s1sp", player.skills[2].sp);
-            $("#skill-3").text(player.skills[2].name + " - " + player.skills[2].sp);
-            $("#skill-4").attr("data-s1n", player.skills[3].name);
-            $("#skill-4").attr("data-s1sp", player.skills[3].sp);
-            $("#skill-4").text(player.skills[3].name + " - " + player.skills[3].sp);
+            // Init skills
+            initializeSkills();
+
             // Dialogue window actions
             $("#dialogue").on("click", function (e) {
                 console.log("Your values are :" + $(this).data("dialogue"));
@@ -721,7 +711,25 @@
         ];
 
         return packets;
-    } 
+    }
+
+    function initializeSkills() {
+        $("#skill-1").attr("data-s1n", player.skills[0].name);
+        $("#skill-1").attr("data-s1sp", player.skills[0].sp);
+        $("#skill-1").text(player.skills[0].name + " - " + player.skills[0].sp);
+
+        $("#skill-2").attr("data-s2n", player.skills[1].name);
+        $("#skill-2").attr("data-s2sp", player.skills[1].sp);
+        $("#skill-2").text(player.skills[1].name + " - " + player.skills[1].sp);
+
+        $("#skill-3").attr("data-s3n", player.skills[2].name);
+        $("#skill-3").attr("data-s3sp", player.skills[2].sp);
+        $("#skill-3").text(player.skills[2].name + " - " + player.skills[2].sp);
+
+        $("#skill-4").attr("data-s4n", player.skills[3].name);
+        $("#skill-4").attr("data-s4sp", player.skills[3].sp);
+        $("#skill-4").text(player.skills[3].name + " - " + player.skills[3].sp);
+    }
 </script>
 
 </html>
