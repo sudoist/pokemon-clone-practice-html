@@ -32,327 +32,39 @@
 		</div>
 	</div>
 
-	<script>
+	<script type="module">
 
-		listPackets();
+		// Initialize packets.... Fetch from DB later
+		import packets from './data/packets.json' assert { type: 'json' };
+		console.log(packets);
 
-		function listPackets() {
-			const packets = initializePackets();
+		listPackets(packets);
+
+		function listPackets(packets) {
 
 			let item = "#list";
 
 			console.log(packets.length)
 
-			for (i = 0; i < packets.length; i++) {
+			for (let i = 0; i < packets.length; i++) {
 				console.log(packets[i])
 				console.log(packets[i].attack)
 				$(item).append(
 					'<a href="battle.html?enemy=' + Math.round(Math.random() * packets.length) + '&player=' + packets[i].id + '">' +
-						'<li class="flex flex-col gap-6 xl:flex-row">' +
-							'<img class="aspect-[4/5] w-52 flex-none rounded-2xl object-contain" src="' + packets[i].image + '" alt="">' +
-							'<div class="flex-auto">' +
-								'<h3 class="text-lg font-semibold leading-8 tracking-tight text-gray-900">' + packets[i].name + '</h3>' +
-								'<p class="text-base leading-7 text-gray-600"Stats</p>' +
-								'<p class="mt-6 text-base leading-7 text-gray-600">HP: ' + packets[i].hp +' <br/>ATK: ' + packets[i].attack + ' <br/>DEF: ' + packets[i].defense + ' </p>' +
-								'<p class="text-base leading-7 text-gray-600"Skills</p>' +
-								'<p class="mt-6 text-base leading-7 text-gray-600">SKILL 1: ' + packets[i].skills[0].name + ' <br/>SKILL 2: ' + packets[i].skills[1].name + ' <br/>SKILL 3: ' + packets[i].skills[2].name + ' <br/>SKILL 4: ' + packets[i].skills[3].name + ' </p>' +
-								'<p class="mt-6 text-base leading-7 text-gray-600"> REMARKS: ' + packets[i].remarks + '</p>' +
-							'</div>' +
-						'</li>' +
+					'<li class="flex flex-col gap-6 xl:flex-row">' +
+					'<img class="aspect-[4/5] w-52 flex-none rounded-2xl object-contain" src="' + packets[i].image + '" alt="">' +
+					'<div class="flex-auto">' +
+					'<h3 class="text-lg font-semibold leading-8 tracking-tight text-gray-900">' + packets[i].name + '</h3>' +
+					'<p class="text-base leading-7 text-gray-600"Stats</p>' +
+					'<p class="mt-6 text-base leading-7 text-gray-600">HP: ' + packets[i].hp + ' <br/>ATK: ' + packets[i].attack + ' <br/>DEF: ' + packets[i].defense + ' </p>' +
+					'<p class="text-base leading-7 text-gray-600"Skills</p>' +
+					'<p class="mt-6 text-base leading-7 text-gray-600">SKILL 1: ' + packets[i].skills[0].name + ' <br/>SKILL 2: ' + packets[i].skills[1].name + ' <br/>SKILL 3: ' + packets[i].skills[2].name + ' <br/>SKILL 4: ' + packets[i].skills[3].name + ' </p>' +
+					'<p class="mt-6 text-base leading-7 text-gray-600"> REMARKS: ' + packets[i].remarks + '</p>' +
+					'</div>' +
+					'</li>' +
 					'</a>'
 				);
 			}
-		}
-
-
-		function initializePackets() { // Hard coded.... Fetch from DB later
-			// Damage multiplier
-			const base = 1;
-			const mid = 1.25;
-			const high = 1.5;
-
-			const packets = [{
-				id: 1,
-				name: "Pikachu",
-				hp: 35,
-				attack: 55,
-				defense: 30,
-				speed: 90,
-				remarks: "Pikachu stats.",
-				image: "assets/packets/pikachu.png",
-				skills: [{
-					name: "Tackle",
-					damage: Math.ceil(10 * base),
-					type: "attack",
-					sp: "7"
-				},
-				{
-					name: "Noodle Whip",
-					damage: Math.ceil(10 * mid),
-					type: "attack",
-					sp: "6"
-				},
-				{
-					name: "Chili Powder Blow",
-					damage: 0,
-					type: "debuff",
-					sp: "4"
-				},
-				{
-					name: "Razor Plastic",
-					damage: Math.ceil(10 * high),
-					type: "attack",
-					sp: "3"
-				}
-				]
-			},
-			{
-				id: 2,
-				name: "Charmander",
-				hp: 39,
-				attack: 52,
-				defense: 43,
-				speed: 65,
-				remarks: "Charmander stats.",
-				image: "assets/packets/charmander.png",
-				skills: [{
-					name: "Scratch",
-					damage: Math.ceil(12 * base),
-					type: "attack",
-					sp: "9"
-				},
-				{
-					name: "UTI",
-					damage: Math.ceil(11 * mid),
-					type: "attack",
-					sp: "5"
-				},
-				{
-					name: "Razor Plastic",
-					damage: Math.ceil(12 * high),
-					type: "attack",
-					sp: "4"
-				},
-				{
-					name: "Kidney Hit",
-					damage: Math.ceil(13 * high),
-					type: "attack",
-					sp: "2"
-				}
-				]
-			},
-			{
-				id: 3,
-				name: "Squirtle",
-				hp: 44,
-				attack: 48,
-				defense: 65,
-				speed: 43,
-				remarks: "Squirtle stats.",
-				image: "assets/packets/squirtle.png",
-				skills: [{
-					name: "Tackle",
-					damage: Math.ceil(10 * base),
-					type: "attack",
-					sp: "13"
-				},
-				{
-					name: "Water Gun",
-					damage: Math.ceil(10 * mid),
-					type: "attack",
-					sp: "6"
-				},
-				{
-					name: "Bubble",
-					damage: Math.ceil(9 * high),
-					type: "attack",
-					sp: "4"
-				},
-				{
-					name: "Hydro Pump",
-					damage: Math.ceil(10 * high),
-					type: "attack",
-					sp: "3"
-				}
-				]
-			},
-			{
-				id: 4,
-				name: "Bulbasaur",
-				hp: 45,
-				attack: 48,
-				defense: 49,
-				speed: 45,
-				remarks: "Bulbasaur stats.",
-				image: "assets/packets/bulbasaur.png",
-				skills: [{
-					name: "Tackle",
-					damage: Math.ceil(10 * base),
-					type: "attack",
-					sp: "13"
-				},
-				{
-					name: "Water Gun",
-					damage: Math.ceil(10 * mid),
-					type: "attack",
-					sp: "6"
-				},
-				{
-					name: "Bubble",
-					damage: Math.ceil(9 * high),
-					type: "attack",
-					sp: "4"
-				},
-				{
-					name: "Hydro Pump",
-					damage: Math.ceil(10 * high),
-					type: "attack",
-					sp: "3"
-				}
-				]
-			},
-			{
-				id: 5,
-				name: "Jigglypuff",
-				hp: 115,
-				attack: 45,
-				defense: 20,
-				speed: 20,
-				remarks: "Jigglypuff stats.",
-				image: "assets/packets/jigglypuff.png",
-				skills: [{
-					name: "Tackle",
-					damage: Math.ceil(10 * base),
-					type: "attack",
-					sp: "13"
-				},
-				{
-					name: "Water Gun",
-					damage: Math.ceil(10 * mid),
-					type: "attack",
-					sp: "6"
-				},
-				{
-					name: "Bubble",
-					damage: Math.ceil(9 * high),
-					type: "attack",
-					sp: "4"
-				},
-				{
-					name: "Hydro Pump",
-					damage: Math.ceil(10 * high),
-					type: "attack",
-					sp: "3"
-				}
-				]
-			},
-			{
-				id: 6,
-				name: "Meowth",
-				hp: 40,
-				attack: 45,
-				defense: 35,
-				speed: 90,
-				remarks: "Meowth stats.",
-				image: "assets/packets/meowth.png",
-				skills: [{
-					name: "Tackle",
-					damage: Math.ceil(10 * base),
-					type: "attack",
-					sp: "13"
-				},
-				{
-					name: "Water Gun",
-					damage: Math.ceil(10 * mid),
-					type: "attack",
-					sp: "6"
-				},
-				{
-					name: "Bubble",
-					damage: Math.ceil(9 * high),
-					type: "attack",
-					sp: "4"
-				},
-				{
-					name: "Hydro Pump",
-					damage: Math.ceil(10 * high),
-					type: "attack",
-					sp: "3"
-				}
-				]
-			}, {
-				id: 7,
-				name: "Lucky Me",
-				hp: 35,
-				attack: 55,
-				defense: 30,
-				speed: 90,
-				remarks: "High speed packet with low stats based on Pikachu.",
-				image: "assets/packets/lakimichilimansi.png",
-				skills: [{
-					name: "Tackle",
-					damage: Math.ceil(10 * base),
-					type: "attack",
-					sp: "7"
-				},
-				{
-					name: "Noodle Whip",
-					damage: Math.ceil(10 * mid),
-					type: "attack",
-					sp: "6"
-				},
-				{
-					name: "Chili Powder Blow",
-					damage: 0,
-					type: "debuff",
-					sp: "4"
-				},
-				{
-					name: "Razor Plastic",
-					damage: Math.ceil(10 * high),
-					type: "attack",
-					sp: "3"
-				}
-				]
-			},
-			{
-				id: 8,
-				name: "Chippy",
-				hp: 39,
-				attack: 52,
-				defense: 43,
-				speed: 65,
-				remarks: "Somewhat balanced stats with lower HP based on Charmander",
-				image: "assets/packets/chippy.png",
-				skills: [{
-					name: "Scratch",
-					damage: Math.ceil(12 * base),
-					type: "attack",
-					sp: "9"
-				},
-				{
-					name: "UTI",
-					damage: Math.ceil(11 * mid),
-					type: "attack",
-					sp: "5"
-				},
-				{
-					name: "Razor Plastic",
-					damage: Math.ceil(12 * high),
-					type: "attack",
-					sp: "4"
-				},
-				{
-					name: "Kidney Hit",
-					damage: Math.ceil(13 * high),
-					type: "attack",
-					sp: "2"
-				}
-				]
-			},
-			];
-
-			return packets;
 		}
 
 	</script>
