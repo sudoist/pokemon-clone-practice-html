@@ -200,7 +200,16 @@
 
     // Initialize damage multipliers
     import multipliers from './data/multiplier.json' assert { type: 'json' };
-    console.log(multipliers);
+
+    function getMultiplier(name, multipliers) {
+        console.log(multipliers);
+
+        return multipliers.filter(
+            function (multiplier) {
+                return multiplier.name == name
+            }
+        );
+    }
 
     function initializeSkills(player) {
         $("#skill-1").attr("data-s1n", player.skills[0].name);
@@ -308,7 +317,11 @@
     }
 
     function useSkill(id, player, currentEnemyHp, enemyHp) {
-        let damage = player.skills[id - 1].damage;
+        // Multiplier
+        const multiplier = getMultiplier(player.skills[id - 1].multiplier, multipliers);
+        console.log("Get multiplier " + multiplier[0].value);
+
+        let damage = Math.round(player.skills[id - 1].damage * multiplier[0].value);
         console.log("skill-" + id);
         console.log("Skill " + id + " clicked name :" + $("#skill-" + id).attr("data-s" + id + "n"));
         console.log("Skill " + id + " clicked skill point :" + $("#skill-" + id).attr("data-s" + id + "sp"));
