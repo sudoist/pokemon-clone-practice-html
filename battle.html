@@ -14,6 +14,17 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
+    <script>
+
+        // Navigation
+        function backToMainMenu() {
+            $("#options").show();
+            $("#skills").hide();
+            $("#dialogue").hide();
+
+        }
+    </script>
+
 </head>
 
 <body>
@@ -339,14 +350,6 @@
         }
 
         return currentEnemyHp;
-    }
-
-    // Navigation
-    function backToMainMenu() {
-        $("#options").show();
-        $("#skills").hide();
-        $("#dialogue").hide();
-
     }
 
     $(document).ready(function () { // Initialize packets in play
