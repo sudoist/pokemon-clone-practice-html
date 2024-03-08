@@ -20,6 +20,7 @@
         function backToMainMenu() {
             $("#options").show();
             $("#skills").hide();
+            $("#items").hide();
             $("#dialogue").hide();
 
         }
@@ -150,7 +151,9 @@
                 <div class="w-1/2">
                     <a href="#" id="fight" data-fight="selected fight">FIGHT</a>
                 </div>
-                <div class="w-1/2">ITEM</div>
+                <div class="w-1/2">
+                    <a href="#" id="item" data-fight="selected item">ITEM</a>
+                </div>
                 <div class="w-1/2">PACKETS</div>
                 <div class="w-1/2">RUN</div>
             </div>
@@ -186,6 +189,18 @@
 
             </div>
 
+        </div>
+
+        <div id="items" class="hidden mt-2 flex rounded-lg border border border-gray-900/25 px-6 py-10">
+
+            <div id="items-container"></div>
+
+            <div class="w-full mt-2 px-6 text-right">
+                <div class="w-100">
+                    <a href="#" onclick="backToMainMenu()">Back</a>
+                </div>
+
+            </div>
 
         </div>
 
@@ -227,6 +242,45 @@
         $("#skill-4").attr("data-s4n", player.skills[3].name);
         $("#skill-4").attr("data-s4sp", player.skills[3].sp);
         $("#skill-4").text(player.skills[3].name + " - " + player.skills[3].sp);
+    }
+
+    // Initialize damage multipliers
+    import items from './data/items.json' assert { type: 'json' };
+
+    function initializeItems() {
+        console.log(items.length);
+        $.each(items, function (key, value) {
+            console.log(key);
+            console.log("key");
+            console.log(value);
+            console.log(value.id);
+
+            console.log("key % 2 === 0");
+            console.log(key % 2 === 0);
+            if (key % 2 === 0) {
+                $('#items-container').append('<div id="ic-row' + key + '" class="flex w-full mt-2 px-6">');
+
+                $('#ic-row' + key).append(
+                    '<div class="w-1/2 zxc">' +
+                    '<a href="#" id="item-' + key + '" data-i' + key + 'n="" data-i' + key + 'amount="' + "10" + '">' + value.name + ' - 10</a>' +
+                    '</div>'
+                );
+            } else {
+                console.log('#ic-row' + (key - 1))
+                $('#ic-row' + (key - 1)).append(
+                    '<div class="w-1/2 werwe">' +
+                    '<a href="#" id="item-' + key + '" data-i' + key + 'n="" data-i' + key + 'amount="' + "10" + '">' + value.name + ' - 10</a>' +
+                    '</div>'
+                );
+            }
+
+            console.log("key % 2 === 0 && key > 0");
+            console.log(key % 2 === 0 && key > 0);
+            if (key % 2 === 0 && key > 0) {
+                $('#items-container').append('</div>');
+            }
+
+        });
     }
 
     function getPacket(id) {
@@ -402,6 +456,9 @@
         // Init skills
         initializeSkills(player);
 
+        // Init items
+        initializeItems();
+
         // Dialogue window actions
         $("#dialogue").on("click", function (e) {
             console.log("Your values are :" + $(this).data("dialogue"));
@@ -459,12 +516,6 @@
             }
         });
 
-        $("#fight").on("click", function (e) {
-            console.log("Fight clicked :" + $(this).data("fight"));
-            $("#options").toggle().attr("data-fight", "selecting skill");
-            $("#skills").toggle().attr("data-fight", "selecting skill window open");
-        }); // TODO: Check turn on who attacks first. Now player goes first but take into account the speed stat later.
-
         // Activating skills in battle
         $("#skill-1").on("click", function (e) {
             currentEnemyHp = useSkill(1, player, currentEnemyHp, enemyHp);
@@ -480,6 +531,20 @@
 
         $("#skill-4").on("click", function (e) {
             currentEnemyHp = useSkill(4, player, currentEnemyHp, enemyHp);
+        });
+
+        // OPTIONS
+        $("#fight").on("click", function (e) {
+            console.log("Fight clicked :" + $(this).data("fight"));
+            $("#options").toggle().attr("data-fight", "selecting skill");
+            $("#skills").toggle().attr("data-fight", "selecting skill window open");
+        }); // TODO: Check turn on who attacks first. Now player goes first but take into account the speed stat later.
+
+
+        $("#item").on("click", function (e) {
+            console.log("Item clicked :" + $(this).data("item"));
+            $("#options").toggle().attr("data-fight", "selecting item");
+            $("#items").toggle().attr("data-fight", "selecting item window open");
         });
     })
 </script>
