@@ -180,558 +180,16 @@
 
     </form>
 
-    <script>
-        function getPacket(id) {
-            const packets = initializePackets();
-            console.log(" ---packets")
-            console.log(packets)
-            let packet = {};
-            $.each(packets, function (key, value) {
-                console.log(value);
-                console.log(value.id);
-                if (id == value.id) {
-                    packet = value;
-                }
-            });
-            console.log("value")
-            console.log(packet)
-            return packet;
-        }
-
-        function debuffChance(param) {
-            let success = false;
-            let chance = Math.random() * 100;
-            if (chance < 40) { // 0-39 40%					
-                success = true;
-            }
-            return success
-        }
-
-        function printHearts(type, hp) {
-            // Default player				
-            let row1 = "#player-hp1";
-            let row2 = "#player-hp2";
-            let row3 = "#player-hp3";
-            let row4 = "#player-hp4";
-            let row5 = "#player-hp5";
-            if (type == "enemy") {
-                row1 = "#enemy-hp1";
-                row2 = "#enemy-hp2";
-                row3 = "#enemy-hp3";
-                row4 = "#enemy-hp4";
-                row5 = "#enemy-hp5";
-            } // Reset rows
-            $(row1).html("");
-            $(row2).html("");
-            $(row3).html("");
-            $(row4).html("");
-            for (i = 1; i <= hp; i++) {
-                if (i <= 25) {
-                    $(row1).append('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg>');
-                } else if (i <= 50) {
-                    $(row2).append('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg>');
-                } else if (i <= 75) {
-                    $(row3).append('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg>');
-                } else if (i <= 100) {
-                    $(row4).append('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg>');
-                }
-            }
-            if (hp < 1) {
-                $(row5).removeClass("hidden");
-            }
-        }
-
-        function changeDamagedHeartsColor(type, hp) {
-            // Default player				
-            let row1 = "#player-hp1";
-            let row2 = "#player-hp2";
-            let row3 = "#player-hp3";
-            let row4 = "#player-hp4";
-            if (type == "enemy") {
-                row1 = "#enemy-hp1";
-                row2 = "#enemy-hp2";
-                row3 = "#enemy-hp3";
-                row4 = "#enemy-hp4";
-            }
-            if (hp <= 25) {
-                $(row1).addClass("text-red-600");
-            }
-        }
-
-        function getSelectedPacket(type) {
-            const searchParams = new URLSearchParams(window.location.search);
-            let id = Math.random() * 5; // Random id
-            console.log(searchParams.has(type));
-            if (searchParams.has(type)) {
-                id = searchParams.get(type);
-            }
-            return id;
-        }
-
-        function useSkill(id, player, currentEnemyHp, enemyHp) {
-            let damage = player.skills[id - 1].damage;
-            console.log("skill-" + id);
-            console.log("Skill " + id + " clicked name :" + $("#skill-" + id).attr("data-s" + id + "n"));
-            console.log("Skill " + id + " clicked skill point :" + $("#skill-" + id).attr("data-s" + id + "sp"));
-            $("#skills").toggle().attr("data-fight", "selecting skill");
-            // Update dialogue
-            $("#dialogue").toggle().attr("data-fight", "selecting skill");
-            $("#dialogue-text").text($("#player-packet").text() + " used " + $("#skill-" + id).attr("data-s" + id + "n") + "!");
-            // Deduct skill
-            if ($("#skill-" + id).attr("data-s" + id + "sp") > 0) {
-                const updatedSkillPoint = $("#skill-" + id).attr("data-s" + id + "sp") - 1;
-                $("#skill-" + id).attr("data-s" + id + "sp", updatedSkillPoint).text($("#skill-" + id).attr("data-s" + id + "n") + " - " + updatedSkillPoint);
-                // Animate attack
-                $("#enemy").addClass("animate-pulse");
-                $("#player").addClass("animate-bounce");
-                if (updatedSkillPoint == 0) {
-                    $("#skill-" + id).addClass("text-red-400").attr("id", "skill-" + id + "-disabled");
-                } // Compute damage
-                console.log("currentEnemyHp")
-                console.log(currentEnemyHp)
-                console.log(damage)
-                currentEnemyHp = currentEnemyHp - damage;
-                $("#enemy-hpt").html("HP " + currentEnemyHp + "/" + enemyHp);
-                // Refresh hearts/hp meter
-                printHearts("enemy", currentEnemyHp);
-                changeDamagedHeartsColor("enemy", currentEnemyHp);
-                // Setup enemy turn						
-                $("#dialogue").show().attr("data-fight", "enemy");
-                // Enemy defeated
-                if (currentEnemyHp < 1) {
-                    currentEnemyHp = 0;
-                    console.log(currentEnemyHp);
-                    console.log("defeated");
-                    $("#skills").hide().attr("data-fight", "close options battle over");
-                    $("#dialogue").show().attr("data-fight", "over");
-                    $("#dialogue-text").text($("#enemy-packet").text() + " has been defeated!");
-                }
-            } else {
-                $("#dialogue-text").text("Unable to use " + $("#skill-" + id).attr("data-s" + id + "n") + ", not enough skill points!");
-            }
-
-            return currentEnemyHp;
-        }
-
-        // Navigation
-        function backToMainMenu() {
-            $("#options").show();
-            $("#skills").hide();
-            $("#dialogue").hide();
-
-        }
-
-        $(document).ready(function () { // Initialize packets in play
-
-            // TODO: Debuffs have 40% to hit				
-            let debuffHit = .4;
-            let blind = .3; // Reduce to 30% chance to hit				
-            let damageOverTime = Math.ceil(10 / 2); // Reduce HP per turn								
-            // Enemy				
-            let selectedEnemy = getSelectedPacket("enemy")
-            let enemy = getPacket(selectedEnemy);
-            // Loading HP				
-            let enemyHp = enemy.hp;
-            let currentEnemyHp = enemy.hp;
-            // Populate UI with enemy data
-            $("#enemy-image").attr("src", enemy.image);
-            $("#enemy-hpt").html("HP " + currentEnemyHp + "/" + enemyHp);
-            printHearts("enemy", currentEnemyHp);
-            $("#enemy-packet").html(enemy.name);
-            $("#enemy-packet").attr("data-ecp", enemy.name);
-            $("#dialogue-text").html("A wild " + enemy.name + " appeared!");
-            // Player
-            let selectedPlayer = getSelectedPacket("player")
-            let player = getPacket(selectedPlayer);
-            console.log(player.skills[0])
-            console.log("player.skill")
-            // Loading HP
-            let playerHp = player.hp;
-            let currentPlayerHp = player.hp;
-            // Populate UI with data
-            $("#player-image").attr("src", player.image);
-            $("#player-hpt").html("HP " + currentPlayerHp + "/" + playerHp);
-            printHearts("player", currentPlayerHp);
-            $("#player-packet").html(player.name);
-            $("#player-packet").attr("data-pcp", player.name);
-
-            // Init skills
-            initializeSkills(player);
-
-            // Dialogue window actions
-            $("#dialogue").on("click", function (e) {
-                console.log("Your values are :" + $(this).data("dialogue"));
-                // Start
-                $("#dialogue").toggle().attr("data-dialogue", "battle");
-                $("#options").toggle();
-                // Player turn
-                if ($(this).attr("data-fight") == "player") {
-                    console.log("player turn");
-                    $("#dialogue").hide();
-                    $("#options").show();
-                    $("#enemy").removeClass("animate-bounce");
-                    $("#player").removeClass("animate-pulse");
-                } // Remove animation on enemy
-                if ($("#enemy").hasClass("animate-pulse")) {
-                    $("#enemy").removeClass("animate-pulse");
-                    $("#player").removeClass("animate-bounce");
-                } // Enemy turn					
-                if ($(this).attr("data-fight") == "enemy") {
-                    console.log("enemy attack");
-                    $("#options").hide();
-                    $("#dialogue-text").text(enemy.name + " used " + player.skills[1].name + "!");
-                    $("#dialogue").show();
-                    $("#dialogue-container").addClass("bg-red-200");
-                    $("#enemy").addClass("animate-bounce");
-                    $("#player").addClass("animate-pulse");
-                    // Enemy damage setup
-                    let damage = player.skills[1].damage;
-                    // Compute damage
-                    currentPlayerHp = currentPlayerHp - damage;
-                    // Player defeated
-                    if (currentPlayerHp < 1) {
-                        currentPlayerHp = 0;
-                        console.log(currentPlayerHp);
-                        console.log("player defeated");
-                        $("#skills").hide().attr("data-fight", "close options battle over");
-                        $("#dialogue").show().attr("data-fight", "over");
-                        $("#dialogue-text").text(player + " has been defeated!");
-                    } else {
-                        // Setup next user turn							
-                        $("#dialogue").show().attr("data-fight", "player");
-                    }
-                    $("#player-hpt").html("HP " + currentPlayerHp + "/" + playerHp);
-                    // Refresh hearts/hp meter
-                    printHearts("player", currentPlayerHp);
-                    changeDamagedHeartsColor("player", currentPlayerHp);
-                }
-                // Battle over
-                if ($(this).attr("data-fight") == "over") {
-                    console.log("battle over");
-                    $("#options").hide();
-                    $("#dialogue").hide();
-                    $("#restart").attr("href", window.location.pathname.replace("battle", "index"));
-                    $("#restart-container").removeClass("hidden");
-                }
-            });
-
-            $("#fight").on("click", function (e) {
-                console.log("Fight clicked :" + $(this).data("fight"));
-                $("#options").toggle().attr("data-fight", "selecting skill");
-                $("#skills").toggle().attr("data-fight", "selecting skill window open");
-            }); // TODO: Check turn on who attacks first. Now player goes first but take into account the speed stat later.
-
-            // Activating skills in battle
-            $("#skill-1").on("click", function (e) {
-                currentEnemyHp = useSkill(1, player, currentEnemyHp, enemyHp);
-            });
-
-            $("#skill-2").on("click", function (e) {
-                currentEnemyHp = useSkill(2, player, currentEnemyHp, enemyHp);
-            });
-
-            $("#skill-3").on("click", function (e) {
-                currentEnemyHp = useSkill(3, player, currentEnemyHp, enemyHp);
-            });
-
-            $("#skill-4").on("click", function (e) {
-                currentEnemyHp = useSkill(4, player, currentEnemyHp, enemyHp);
-            });
-        })
-    </script>
-
 </body>
 
-<script>
-    function initializePackets() { // Hard coded.... Fetch from DB later
-        // Damage multiplier
-        const base = 1;
-        const mid = 1.25;
-        const high = 1.5;
+<script type="module">
+    // Initialize packets.... Fetch from DB later
+    import packets from './data/packets.json' assert { type: 'json' };
+    console.log(packets);
 
-        const packets = [{
-            id: 1,
-            name: "Pikachu",
-            hp: 35,
-            attack: 55,
-            defense: 30,
-            speed: 90,
-            remarks: "Pikachu stats.",
-            image: "assets/packets/pikachu.png",
-            skills: [{
-                name: "Tackle",
-                damage: Math.ceil(10 * base),
-                type: "attack",
-                sp: "7"
-            },
-            {
-                name: "Noodle Whip",
-                damage: Math.ceil(10 * mid),
-                type: "attack",
-                sp: "6"
-            },
-            {
-                name: "Chili Powder Blow",
-                damage: 0,
-                type: "debuff",
-                sp: "4"
-            },
-            {
-                name: "Razor Plastic",
-                damage: Math.ceil(10 * high),
-                type: "attack",
-                sp: "3"
-            }
-            ]
-        },
-        {
-            id: 2,
-            name: "Charmander",
-            hp: 39,
-            attack: 52,
-            defense: 43,
-            speed: 65,
-            remarks: "Charmander stats.",
-            image: "assets/packets/charmander.png",
-            skills: [{
-                name: "Scratch",
-                damage: Math.ceil(12 * base),
-                type: "attack",
-                sp: "9"
-            },
-            {
-                name: "UTI",
-                damage: Math.ceil(11 * mid),
-                type: "attack",
-                sp: "5"
-            },
-            {
-                name: "Razor Plastic",
-                damage: Math.ceil(12 * high),
-                type: "attack",
-                sp: "4"
-            },
-            {
-                name: "Kidney Hit",
-                damage: Math.ceil(13 * high),
-                type: "attack",
-                sp: "2"
-            }
-            ]
-        },
-        {
-            id: 3,
-            name: "Squirtle",
-            hp: 44,
-            attack: 48,
-            defense: 65,
-            speed: 43,
-            remarks: "Squirtle stats.",
-            image: "assets/packets/squirtle.png",
-            skills: [{
-                name: "Tackle",
-                damage: Math.ceil(10 * base),
-                type: "attack",
-                sp: "13"
-            },
-            {
-                name: "Water Gun",
-                damage: Math.ceil(10 * mid),
-                type: "attack",
-                sp: "6"
-            },
-            {
-                name: "Bubble",
-                damage: Math.ceil(9 * high),
-                type: "attack",
-                sp: "4"
-            },
-            {
-                name: "Hydro Pump",
-                damage: Math.ceil(10 * high),
-                type: "attack",
-                sp: "3"
-            }
-            ]
-        },
-        {
-            id: 4,
-            name: "Bulbasaur",
-            hp: 45,
-            attack: 48,
-            defense: 49,
-            speed: 45,
-            remarks: "Bulbasaur stats.",
-            image: "assets/packets/bulbasaur.png",
-            skills: [{
-                name: "Tackle",
-                damage: Math.ceil(10 * base),
-                type: "attack",
-                sp: "13"
-            },
-            {
-                name: "Water Gun",
-                damage: Math.ceil(10 * mid),
-                type: "attack",
-                sp: "6"
-            },
-            {
-                name: "Bubble",
-                damage: Math.ceil(9 * high),
-                type: "attack",
-                sp: "4"
-            },
-            {
-                name: "Hydro Pump",
-                damage: Math.ceil(10 * high),
-                type: "attack",
-                sp: "3"
-            }
-            ]
-        },
-        {
-            id: 5,
-            name: "Jigglypuff",
-            hp: 115,
-            attack: 45,
-            defense: 20,
-            speed: 20,
-            remarks: "Jigglypuff stats.",
-            image: "assets/packets/jigglypuff.png",
-            skills: [{
-                name: "Tackle",
-                damage: Math.ceil(10 * base),
-                type: "attack",
-                sp: "13"
-            },
-            {
-                name: "Water Gun",
-                damage: Math.ceil(10 * mid),
-                type: "attack",
-                sp: "6"
-            },
-            {
-                name: "Bubble",
-                damage: Math.ceil(9 * high),
-                type: "attack",
-                sp: "4"
-            },
-            {
-                name: "Hydro Pump",
-                damage: Math.ceil(10 * high),
-                type: "attack",
-                sp: "3"
-            }
-            ]
-        },
-        {
-            id: 6,
-            name: "Meowth",
-            hp: 40,
-            attack: 45,
-            defense: 35,
-            speed: 90,
-            remarks: "Meowth stats.",
-            image: "assets/packets/meowth.png",
-            skills: [{
-                name: "Tackle",
-                damage: Math.ceil(10 * base),
-                type: "attack",
-                sp: "13"
-            },
-            {
-                name: "Water Gun",
-                damage: Math.ceil(10 * mid),
-                type: "attack",
-                sp: "6"
-            },
-            {
-                name: "Bubble",
-                damage: Math.ceil(9 * high),
-                type: "attack",
-                sp: "4"
-            },
-            {
-                name: "Hydro Pump",
-                damage: Math.ceil(10 * high),
-                type: "attack",
-                sp: "3"
-            }
-            ]
-        }, {
-            id: 7,
-            name: "Lucky Me",
-            hp: 35,
-            attack: 55,
-            defense: 30,
-            speed: 90,
-            remarks: "High speed packet with low stats based on Pikachu.",
-            image: "assets/packets/lakimichilimansi.png",
-            skills: [{
-                name: "Tackle",
-                damage: Math.ceil(10 * base),
-                type: "attack",
-                sp: "7"
-            },
-            {
-                name: "Noodle Whip",
-                damage: Math.ceil(10 * mid),
-                type: "attack",
-                sp: "6"
-            },
-            {
-                name: "Chili Powder Blow",
-                damage: 0,
-                type: "debuff",
-                sp: "4"
-            },
-            {
-                name: "Razor Plastic",
-                damage: Math.ceil(10 * high),
-                type: "attack",
-                sp: "3"
-            }
-            ]
-        },
-        {
-            id: 8,
-            name: "Chippy",
-            hp: 39,
-            attack: 52,
-            defense: 43,
-            speed: 65,
-            remarks: "Somewhat balanced stats with lower HP based on Charmander",
-            image: "assets/packets/chippy.png",
-            skills: [{
-                name: "Scratch",
-                damage: Math.ceil(12 * base),
-                type: "attack",
-                sp: "9"
-            },
-            {
-                name: "UTI",
-                damage: Math.ceil(11 * mid),
-                type: "attack",
-                sp: "5"
-            },
-            {
-                name: "Razor Plastic",
-                damage: Math.ceil(12 * high),
-                type: "attack",
-                sp: "4"
-            },
-            {
-                name: "Kidney Hit",
-                damage: Math.ceil(13 * high),
-                type: "attack",
-                sp: "2"
-            }
-            ]
-        },
-        ];
-
-        return packets;
-    }
+    // Initialize damage multipliers
+    import multipliers from './data/multiplier.json' assert { type: 'json' };
+    console.log(multipliers);
 
     function initializeSkills(player) {
         $("#skill-1").attr("data-s1n", player.skills[0].name);
@@ -750,6 +208,264 @@
         $("#skill-4").attr("data-s4sp", player.skills[3].sp);
         $("#skill-4").text(player.skills[3].name + " - " + player.skills[3].sp);
     }
+
+    function getPacket(id) {
+        // const packets = initializePackets();
+        console.log(" ---packets")
+        console.log(packets)
+        let packet = {};
+        $.each(packets, function (key, value) {
+            console.log(value);
+            console.log(value.id);
+            if (id == value.id) {
+                packet = value;
+            }
+        });
+        console.log("value")
+        console.log(packet)
+        return packet;
+    }
+
+    function debuffChance(param) {
+        let success = false;
+        let chance = Math.random() * 100;
+        if (chance < 40) { // 0-39 40%					
+            success = true;
+        }
+        return success
+    }
+
+    function printHearts(type, hp) {
+        // Default player				
+        let row1 = "#player-hp1";
+        let row2 = "#player-hp2";
+        let row3 = "#player-hp3";
+        let row4 = "#player-hp4";
+        let row5 = "#player-hp5";
+        if (type == "enemy") {
+            row1 = "#enemy-hp1";
+            row2 = "#enemy-hp2";
+            row3 = "#enemy-hp3";
+            row4 = "#enemy-hp4";
+            row5 = "#enemy-hp5";
+        } // Reset rows
+        $(row1).html("");
+        $(row2).html("");
+        $(row3).html("");
+        $(row4).html("");
+        for (let i = 1; i <= hp; i++) {
+            if (i <= 25) {
+                $(row1).append('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg>');
+            } else if (i <= 50) {
+                $(row2).append('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg>');
+            } else if (i <= 75) {
+                $(row3).append('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg>');
+            } else if (i <= 100) {
+                $(row4).append('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg>');
+            }
+        }
+        if (hp < 1) {
+            $(row5).removeClass("hidden");
+        }
+    }
+
+    function changeDamagedHeartsColor(type, hp) {
+        // Default player				
+        let row1 = "#player-hp1";
+        let row2 = "#player-hp2";
+        let row3 = "#player-hp3";
+        let row4 = "#player-hp4";
+        if (type == "enemy") {
+            row1 = "#enemy-hp1";
+            row2 = "#enemy-hp2";
+            row3 = "#enemy-hp3";
+            row4 = "#enemy-hp4";
+        }
+        if (hp <= 25) {
+            $(row1).addClass("text-red-600");
+        }
+    }
+
+    function getSelectedPacket(type) {
+        const searchParams = new URLSearchParams(window.location.search);
+        let id = Math.random() * 5; // Random id
+        console.log(searchParams.has(type));
+        if (searchParams.has(type)) {
+            id = searchParams.get(type);
+        }
+        return id;
+    }
+
+    function useSkill(id, player, currentEnemyHp, enemyHp) {
+        let damage = player.skills[id - 1].damage;
+        console.log("skill-" + id);
+        console.log("Skill " + id + " clicked name :" + $("#skill-" + id).attr("data-s" + id + "n"));
+        console.log("Skill " + id + " clicked skill point :" + $("#skill-" + id).attr("data-s" + id + "sp"));
+        $("#skills").toggle().attr("data-fight", "selecting skill");
+        // Update dialogue
+        $("#dialogue").toggle().attr("data-fight", "selecting skill");
+        $("#dialogue-text").text($("#player-packet").text() + " used " + $("#skill-" + id).attr("data-s" + id + "n") + "!");
+        // Deduct skill
+        if ($("#skill-" + id).attr("data-s" + id + "sp") > 0) {
+            const updatedSkillPoint = $("#skill-" + id).attr("data-s" + id + "sp") - 1;
+            $("#skill-" + id).attr("data-s" + id + "sp", updatedSkillPoint).text($("#skill-" + id).attr("data-s" + id + "n") + " - " + updatedSkillPoint);
+            // Animate attack
+            $("#enemy").addClass("animate-pulse");
+            $("#player").addClass("animate-bounce");
+            if (updatedSkillPoint == 0) {
+                $("#skill-" + id).addClass("text-red-400").attr("id", "skill-" + id + "-disabled");
+            } // Compute damage
+            console.log("currentEnemyHp")
+            console.log(currentEnemyHp)
+            console.log(damage)
+            currentEnemyHp = currentEnemyHp - damage;
+            $("#enemy-hpt").html("HP " + currentEnemyHp + "/" + enemyHp);
+            // Refresh hearts/hp meter
+            printHearts("enemy", currentEnemyHp);
+            changeDamagedHeartsColor("enemy", currentEnemyHp);
+            // Setup enemy turn						
+            $("#dialogue").show().attr("data-fight", "enemy");
+            // Enemy defeated
+            if (currentEnemyHp < 1) {
+                currentEnemyHp = 0;
+                console.log(currentEnemyHp);
+                console.log("defeated");
+                $("#skills").hide().attr("data-fight", "close options battle over");
+                $("#dialogue").show().attr("data-fight", "over");
+                $("#dialogue-text").text($("#enemy-packet").text() + " has been defeated!");
+            }
+        } else {
+            $("#dialogue-text").text("Unable to use " + $("#skill-" + id).attr("data-s" + id + "n") + ", not enough skill points!");
+        }
+
+        return currentEnemyHp;
+    }
+
+    // Navigation
+    function backToMainMenu() {
+        $("#options").show();
+        $("#skills").hide();
+        $("#dialogue").hide();
+
+    }
+
+    $(document).ready(function () { // Initialize packets in play
+
+        // TODO: Debuffs have 40% to hit				
+        let debuffHit = .4;
+        let blind = .3; // Reduce to 30% chance to hit				
+        let damageOverTime = Math.ceil(10 / 2); // Reduce HP per turn								
+        // Enemy				
+        let selectedEnemy = getSelectedPacket("enemy")
+        let enemy = getPacket(selectedEnemy);
+        // Loading HP				
+        let enemyHp = enemy.hp;
+        let currentEnemyHp = enemy.hp;
+        // Populate UI with enemy data
+        $("#enemy-image").attr("src", enemy.image);
+        $("#enemy-hpt").html("HP " + currentEnemyHp + "/" + enemyHp);
+        printHearts("enemy", currentEnemyHp);
+        $("#enemy-packet").html(enemy.name);
+        $("#enemy-packet").attr("data-ecp", enemy.name);
+        $("#dialogue-text").html("A wild " + enemy.name + " appeared!");
+        // Player
+        let selectedPlayer = getSelectedPacket("player")
+        let player = getPacket(selectedPlayer);
+        console.log(player.skills[0])
+        console.log("player.skill")
+        // Loading HP
+        let playerHp = player.hp;
+        let currentPlayerHp = player.hp;
+        // Populate UI with data
+        $("#player-image").attr("src", player.image);
+        $("#player-hpt").html("HP " + currentPlayerHp + "/" + playerHp);
+        printHearts("player", currentPlayerHp);
+        $("#player-packet").html(player.name);
+        $("#player-packet").attr("data-pcp", player.name);
+
+        // Init skills
+        initializeSkills(player);
+
+        // Dialogue window actions
+        $("#dialogue").on("click", function (e) {
+            console.log("Your values are :" + $(this).data("dialogue"));
+            // Start
+            $("#dialogue").toggle().attr("data-dialogue", "battle");
+            $("#options").toggle();
+            // Player turn
+            if ($(this).attr("data-fight") == "player") {
+                console.log("player turn");
+                $("#dialogue").hide();
+                $("#options").show();
+                $("#enemy").removeClass("animate-bounce");
+                $("#player").removeClass("animate-pulse");
+            } // Remove animation on enemy
+            if ($("#enemy").hasClass("animate-pulse")) {
+                $("#enemy").removeClass("animate-pulse");
+                $("#player").removeClass("animate-bounce");
+            } // Enemy turn					
+            if ($(this).attr("data-fight") == "enemy") {
+                console.log("enemy attack");
+                $("#options").hide();
+                $("#dialogue-text").text(enemy.name + " used " + player.skills[1].name + "!");
+                $("#dialogue").show();
+                $("#dialogue-container").addClass("bg-red-200");
+                $("#enemy").addClass("animate-bounce");
+                $("#player").addClass("animate-pulse");
+                // Enemy damage setup
+                let damage = player.skills[1].damage;
+                // Compute damage
+                currentPlayerHp = currentPlayerHp - damage;
+                // Player defeated
+                if (currentPlayerHp < 1) {
+                    currentPlayerHp = 0;
+                    console.log(currentPlayerHp);
+                    console.log("player defeated");
+                    $("#skills").hide().attr("data-fight", "close options battle over");
+                    $("#dialogue").show().attr("data-fight", "over");
+                    $("#dialogue-text").text(player + " has been defeated!");
+                } else {
+                    // Setup next user turn							
+                    $("#dialogue").show().attr("data-fight", "player");
+                }
+                $("#player-hpt").html("HP " + currentPlayerHp + "/" + playerHp);
+                // Refresh hearts/hp meter
+                printHearts("player", currentPlayerHp);
+                changeDamagedHeartsColor("player", currentPlayerHp);
+            }
+            // Battle over
+            if ($(this).attr("data-fight") == "over") {
+                console.log("battle over");
+                $("#options").hide();
+                $("#dialogue").hide();
+                $("#restart").attr("href", window.location.pathname.replace("battle", "index"));
+                $("#restart-container").removeClass("hidden");
+            }
+        });
+
+        $("#fight").on("click", function (e) {
+            console.log("Fight clicked :" + $(this).data("fight"));
+            $("#options").toggle().attr("data-fight", "selecting skill");
+            $("#skills").toggle().attr("data-fight", "selecting skill window open");
+        }); // TODO: Check turn on who attacks first. Now player goes first but take into account the speed stat later.
+
+        // Activating skills in battle
+        $("#skill-1").on("click", function (e) {
+            currentEnemyHp = useSkill(1, player, currentEnemyHp, enemyHp);
+        });
+
+        $("#skill-2").on("click", function (e) {
+            currentEnemyHp = useSkill(2, player, currentEnemyHp, enemyHp);
+        });
+
+        $("#skill-3").on("click", function (e) {
+            currentEnemyHp = useSkill(3, player, currentEnemyHp, enemyHp);
+        });
+
+        $("#skill-4").on("click", function (e) {
+            currentEnemyHp = useSkill(4, player, currentEnemyHp, enemyHp);
+        });
+    })
 </script>
 
 </html>
