@@ -542,9 +542,24 @@
 
             $("#item-" + key).on("click", function (e) {
 
+                // Tinamad na.. gawin nalang muna all skills ang SP pots
                 console.log("key - " + key + " value " + value);
                 console.log(value);
                 console.log(value.id);
+                // Check item type
+                if (value.type === "HP Recovery") {
+                    console.log("heal hp");
+                } else if (value.type === "SP Recovery") {
+                    console.log("heal sp");
+                } else if (value.type === "Status Recovery") {
+                    console.log("heal sp");
+                } else if (value.type === "Attack") {
+                    console.log("Attack");
+                } else if (value.type === "Debuff") {
+                    console.log("Debuff");
+                } else {
+                    console.log("Invalid item");
+                }
             });
 
         });
