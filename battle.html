@@ -419,6 +419,10 @@
         return currentEnemyHp;
     }
 
+    function useItem(itemId) {
+
+    }
+
     $(document).ready(function () { // Initialize packets in play
 
         // TODO: Debuffs have 40% to hit				
@@ -531,6 +535,18 @@
 
         $("#skill-4").on("click", function (e) {
             currentEnemyHp = useSkill(4, player, currentEnemyHp, enemyHp);
+        });
+
+        // Using items in battle
+        $.each(items, function (key, value) {
+
+            $("#item-" + key).on("click", function (e) {
+
+                console.log("key - " + key + " value " + value);
+                console.log(value);
+                console.log(value.id);
+            });
+
         });
 
         // OPTIONS
