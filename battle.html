@@ -357,6 +357,9 @@
         }
         if (hp <= 25) {
             $(row1).addClass("text-red-600");
+        } else if (hp > 25) {
+            $(row1).removeClass("text-red-600");
+            $(row1).addClass("text-green-600");
         }
     }
 
@@ -387,6 +390,12 @@
         if ($("#skill-" + id).attr("data-s" + id + "sp") > 0) {
             const updatedSkillPoint = $("#skill-" + id).attr("data-s" + id + "sp") - 1;
             $("#skill-" + id).attr("data-s" + id + "sp", updatedSkillPoint).text($("#skill-" + id).attr("data-s" + id + "n") + " - " + updatedSkillPoint);
+
+            console.log("updated skill point")
+            console.log(updatedSkillPoint)
+            console.log("default skill point")
+            console.log(player.skills[id - 1].sp)
+
             // Animate attack
             $("#enemy").addClass("animate-pulse");
             $("#player").addClass("animate-bounce");
@@ -419,7 +428,40 @@
         return currentEnemyHp;
     }
 
-    function useItem(itemId) {
+    // WIP: HEAL NOT ADDING PROPERLY
+    function usePotion(playerHp, currentPlayerHp, item) {
+        $("#items").toggle();
+        // Update dialogue
+        $("#dialogue").toggle().attr("data-fight", "selecting item");
+        $("#dialogue-text").text($("#player-packet").text() + " used " + item.name + "!");
+
+        // Heal HP
+        let healedHp = currentPlayerHp + item.value;
+
+        console.log("currentPlayerHp = healedHp")
+        console.log(item.value)
+        console.log(currentPlayerHp)
+        console.log(healedHp)
+        console.log(playerHp)
+
+        console.log(healedHp >= playerHp)
+        if (healedHp >= playerHp) {
+
+            $("#player-hpt").html("HP " + playerHp + "/" + playerHp);
+            // Refresh hearts/hp meter
+            printHearts("player", playerHp);
+            changeDamagedHeartsColor("player", playerHp);
+            currentPlayerHp = playerHp
+            return playerHp;
+        } else {
+
+            $("#player-hpt").html("HP " + healedHp + "/" + playerHp);
+            // Refresh hearts/hp meter
+            printHearts("player", healedHp);
+            changeDamagedHeartsColor("player", healedHp);
+            currentPlayerHp = healedHp
+            return healedHp;
+        }
 
     }
 
@@ -549,6 +591,8 @@
                 // Check item type
                 if (value.type === "HP Recovery") {
                     console.log("heal hp");
+                    usePotion(playerHp, currentPlayerHp, value);
+                    // currentPlayerHp = usePotion(value);
                 } else if (value.type === "SP Recovery") {
                     console.log("heal sp");
                 } else if (value.type === "Status Recovery") {
@@ -560,6 +604,7 @@
                 } else {
                     console.log("Invalid item");
                 }
+                // useItem(value);
             });
 
         });
