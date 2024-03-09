@@ -3,12 +3,14 @@
        "id":1,
        "name":"Potion",
        "type":"HP Recovery",
-       "value":20
+       "value":20,
+       "description":"Recovers 20 HP of current unit"
     },
     {
        "id":2,
        "name":"Ether",
        "type":"SP Recovery",
-       "value":10
+       "value":10,
+       "description":"Recovers 10 SP of all unit's skills"
     }
  ]
