@@ -411,7 +411,8 @@
             printHearts("enemy", currentEnemyHp);
             changeDamagedHeartsColor("enemy", currentEnemyHp);
             // Setup enemy turn						
-            $("#dialogue").show().attr("data-fight", "enemy");
+            $("#dialogue").show().attr("data-fight", "enemy");            
+            $("#dialogue-container").removeClass("bg-red-200");
             // Enemy defeated
             if (currentEnemyHp < 1) {
                 currentEnemyHp = 0;
@@ -428,7 +429,6 @@
         return currentEnemyHp;
     }
 
-    // WIP: HEAL NOT ADDING PROPERLY
     function usePotion(playerHp, currentPlayerHp, item) {
         $("#items").toggle();
         // Update dialogue
@@ -452,6 +452,10 @@
             printHearts("player", playerHp);
             changeDamagedHeartsColor("player", playerHp);
             currentPlayerHp = playerHp
+            // Setup enemy turn
+            $("#player").addClass("animate-bounce");
+            $("#dialogue").show().attr("data-fight", "enemy");
+            $("#dialogue-container").removeClass("bg-red-200");
             return playerHp;
         } else {
 
@@ -460,6 +464,10 @@
             printHearts("player", healedHp);
             changeDamagedHeartsColor("player", healedHp);
             currentPlayerHp = healedHp
+            // Setup enemy turn
+            $("#player").addClass("animate-bounce");
+            $("#dialogue").show().attr("data-fight", "enemy");
+            $("#dialogue-container").removeClass("bg-red-200");
             return healedHp;
         }
 
@@ -531,6 +539,7 @@
                 $("#dialogue-container").addClass("bg-red-200");
                 $("#enemy").addClass("animate-bounce");
                 $("#player").addClass("animate-pulse");
+                $("#player").removeClass("animate-bounce");
                 // Enemy damage setup
                 let damage = player.skills[1].damage;
                 // Compute damage
@@ -591,8 +600,8 @@
                 // Check item type
                 if (value.type === "HP Recovery") {
                     console.log("heal hp");
-                    usePotion(playerHp, currentPlayerHp, value);
-                    // currentPlayerHp = usePotion(value);
+                    console.log("current - " + currentPlayerHp);
+                    currentPlayerHp = usePotion(playerHp, currentPlayerHp, value);
                 } else if (value.type === "SP Recovery") {
                     console.log("heal sp");
                 } else if (value.type === "Status Recovery") {
