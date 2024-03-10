@@ -227,21 +227,25 @@
     }
 
     function initializeSkills(player) {
+        $("#skill-1-disabled").attr("id", "skill-1");
         $("#skill-1").attr("data-s1n", player.skills[0].name);
         $("#skill-1").attr("data-s1sp", player.skills[0].sp);
-        $("#skill-1").text(player.skills[0].name + " - " + player.skills[0].sp);
+        $("#skill-1").text(player.skills[0].name + " - " + player.skills[0].sp).removeClass("text-red-400");;
 
+        $("#skill-2-disabled").attr("id", "skill-2");
         $("#skill-2").attr("data-s2n", player.skills[1].name);
         $("#skill-2").attr("data-s2sp", player.skills[1].sp);
-        $("#skill-2").text(player.skills[1].name + " - " + player.skills[1].sp);
+        $("#skill-2").text(player.skills[1].name + " - " + player.skills[1].sp).removeClass("text-red-400");;
 
+        $("#skill-3-disabled").attr("id", "skill-3");
         $("#skill-3").attr("data-s3n", player.skills[2].name);
         $("#skill-3").attr("data-s3sp", player.skills[2].sp);
-        $("#skill-3").text(player.skills[2].name + " - " + player.skills[2].sp);
+        $("#skill-3").text(player.skills[2].name + " - " + player.skills[2].sp).removeClass("text-red-400");;
 
+        $("#skill-4-disabled").attr("id", "skill-4");
         $("#skill-4").attr("data-s4n", player.skills[3].name);
         $("#skill-4").attr("data-s4sp", player.skills[3].sp);
-        $("#skill-4").text(player.skills[3].name + " - " + player.skills[3].sp);
+        $("#skill-4").text(player.skills[3].name + " - " + player.skills[3].sp).removeClass("text-red-400");;
     }
 
     // Initialize damage multipliers
@@ -411,7 +415,7 @@
             printHearts("enemy", currentEnemyHp);
             changeDamagedHeartsColor("enemy", currentEnemyHp);
             // Setup enemy turn						
-            $("#dialogue").show().attr("data-fight", "enemy");            
+            $("#dialogue").show().attr("data-fight", "enemy");
             $("#dialogue-container").removeClass("bg-red-200");
             // Enemy defeated
             if (currentEnemyHp < 1) {
@@ -437,12 +441,6 @@
 
         // Heal HP
         let healedHp = currentPlayerHp + item.value;
-
-        console.log("currentPlayerHp = healedHp")
-        console.log(item.value)
-        console.log(currentPlayerHp)
-        console.log(healedHp)
-        console.log(playerHp)
 
         console.log(healedHp >= playerHp)
         if (healedHp >= playerHp) {
@@ -470,6 +468,23 @@
             $("#dialogue-container").removeClass("bg-red-200");
             return healedHp;
         }
+
+    }
+
+    function useEther(player, item) {
+        console.log(item)
+        $("#items").toggle();
+        // Update dialogue
+        $("#dialogue").toggle().attr("data-fight", "selecting item");
+        $("#dialogue-text").text($("#player-packet").text() + " used " + item.name + "!");
+
+        // Heal SP
+        initializeSkills(player);
+
+        // Setup enemy turn
+        $("#player").addClass("animate-bounce");
+        $("#dialogue").show().attr("data-fight", "enemy");
+        $("#dialogue-container").removeClass("bg-red-200");
 
     }
 
@@ -604,6 +619,7 @@
                     currentPlayerHp = usePotion(playerHp, currentPlayerHp, value);
                 } else if (value.type === "SP Recovery") {
                     console.log("heal sp");
+                    useEther(player, value);
                 } else if (value.type === "Status Recovery") {
                     console.log("heal sp");
                 } else if (value.type === "Attack") {
