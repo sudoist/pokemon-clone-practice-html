@@ -21,7 +21,7 @@
 	<div class="bg-white py-24 sm:py-32">
 		<div class="mx-auto max-w-7xl px-6 lg:px-8">
 			<div class="mx-auto max-w-2xl sm:text-center">
-				<h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Select your player</h2>
+				<h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Select Mode</h2>
 				<!-- <p class="mt-6 text-lg leading-8 text-gray-600">We’re a dynamic group of individuals who are passionate
 					about what we do and dedicated to delivering the best results for our clients.</p> -->
 			</div>
@@ -34,33 +34,28 @@
 
 	<script type="module">
 
-		// Initialize packets.... Fetch from DB later
-		import packets from './data/packets.json' assert { type: 'json' };
-		console.log(packets);
+		// Initialize modes.... Fetch from DB later
+		import modes from './data/modes.json' assert { type: 'json' };
+		console.log(modes);
 
-		listPackets(packets);
+		listModes(modes);
 
-		function listPackets(packets) {
+		function listModes(modes) {
 
 			let item = "#list";
 
-			console.log(packets.length)
+			console.log(modes.length)
 
-			for (let i = 0; i < packets.length; i++) {
-				console.log(packets[i])
-				console.log(packets[i].attack)
+			for (let i = 0; i < modes.length; i++) {
+				console.log(modes[i])
+				console.log(modes[i].image)
 				$(item).append(
-					'<a href="battle.html?enemy=' + Math.round(Math.random() * packets.length) + '&player=' + packets[i].id + '">' +
-					'<li class="flex flex-col gap-6 xl:flex-row">' +
-					'<img class="aspect-[4/5] w-52 flex-none rounded-2xl object-contain" src="' + packets[i].image + '" alt="">' +
-					'<div class="flex-auto">' +
-					'<h3 class="text-lg font-semibold leading-8 tracking-tight text-gray-900">' + packets[i].name + '</h3>' +
-					'<p class="text-base leading-7 text-gray-600"Stats</p>' +
-					'<p class="mt-6 text-base leading-7 text-gray-600">HP: ' + packets[i].hp + ' <br/>ATK: ' + packets[i].attack + ' <br/>DEF: ' + packets[i].defense + ' </p>' +
-					'<p class="text-base leading-7 text-gray-600"Skills</p>' +
-					'<p class="mt-6 text-base leading-7 text-gray-600">SKILL 1: ' + packets[i].skills[0].name + ' <br/>SKILL 2: ' + packets[i].skills[1].name + ' <br/>SKILL 3: ' + packets[i].skills[2].name + ' <br/>SKILL 4: ' + packets[i].skills[3].name + ' </p>' +
-					'<p class="mt-6 text-base leading-7 text-gray-600"> REMARKS: ' + packets[i].remarks + '</p>' +
-					'</div>' +
+					'<a href="roster.html?roster=' + modes[i].members + '">' +
+					'<li">' +
+					'<img class="aspect-[3/2] w-full rounded-2xl object-contain" src="' + modes[i].image + '" alt="">' +
+					'<h3 class="my-6 text-5xl font-semibold leading-8 text-gray-900 text-center">' + modes[i].name + '</h3>' +
+					'<p class="text-3xl leading-7 text-gray-600 text-center">' + modes[i].type + '</p>' +
+					'<p class="mt-4 text-base leading-7 text-gray-600">' + modes[i].description + '</p>' +
 					'</li>' +
 					'</a>'
 				);

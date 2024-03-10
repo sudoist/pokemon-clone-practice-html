@@ -1,0 +1,18 @@
+[
+   {
+      "id": 1,
+      "name": "One on One",
+      "type": "Single",
+      "members": 1,
+      "description": "One on One match! Praesentium iure error aliquam voluptas ut libero. Commodi placeat sit iure nulla officiis. Ut ex sit repellat tempora. Qui est accusamus exercitationem natus ut voluptas. Officiis velit eos ducimus.",
+      "image": "assets/modes/1v1.jpg"
+   },
+   {
+      "id": 2,
+      "name": "Three on Three",
+      "type": "Team",
+      "members": 3,
+      "description": "Three on Three match ups! Praesentium iure error aliquam voluptas ut libero. Commodi placeat sit iure nulla officiis. Ut ex sit repellat tempora. Qui est accusamus exercitationem natus ut voluptas. Officiis velit eos ducimus.",
+      "image": "assets/modes/3v3.jpg"
+   }
+]
