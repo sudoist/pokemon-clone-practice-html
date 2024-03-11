@@ -21,9 +21,10 @@
 	<div class="bg-white py-24 sm:py-32">
 		<div class="mx-auto max-w-7xl px-6 lg:px-8">
 			<div class="mx-auto max-w-2xl sm:text-center">
-				<h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Select your player</h2>
-				<!-- <p class="mt-6 text-lg leading-8 text-gray-600">We’re a dynamic group of individuals who are passionate
-					about what we do and dedicated to delivering the best results for our clients.</p> -->
+				<h2 id="heading" class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"></h2>
+				<p id="heading-description" class="mt-6 text-lg leading-8 text-gray-600">We’re a dynamic group of
+					individuals who are passionate
+					about what we do and dedicated to delivering the best results for our clients.</p>
 			</div>
 			<ul id="list" role="list"
 				class="mx-auto mt-20 grid max-w-2xl grid-cols-1 gap-x-6 gap-y-20 sm:grid-cols-2 lg:max-w-4xl lg:gap-x-8 xl:max-w-none">
@@ -38,7 +39,48 @@
 		import packets from './data/packets.json' assert { type: 'json' };
 		console.log(packets);
 
+		import modes from './data/modes.json' assert { type: 'json' };
+
 		listPackets(packets);
+
+		// Initialize page
+		$(document).ready(function () {
+			const searchParams = new URLSearchParams(window.location.search);
+			console.log(searchParams.has("mode"));
+
+			// Check if mode is selected
+			if (searchParams.has("mode")) {
+				let id = searchParams.get("mode");
+
+				let mode = getMode(modes, id);
+
+				console.log(mode)
+
+				// Setup page
+				if (mode.members === 1) {
+
+					$("#heading").text("Select your player")
+					$("#heading-description").text(mode.description)
+				} else if (mode.members > 1) {
+					$("#heading").text("Select " + mode.members + " players")
+					$("#heading-description").text(mode.description)
+				} else {
+					// Invalid data
+					console.log("Invalid data")
+
+					// Return to index
+					window.location.href = "/"
+				}
+
+
+			} else {
+
+				// Return to index
+				window.location.href = "/"
+			}
+
+
+		})
 
 		function listPackets(packets) {
 
@@ -65,6 +107,22 @@
 					'</a>'
 				);
 			}
+		}
+
+		function getMode(modes, id) {
+			console.log(" ---modes")
+			console.log(modes)
+			let mode = {};
+			$.each(modes, function (key, value) {
+				console.log(value);
+				console.log(value.id);
+				if (id == value.id) {
+					mode = value;
+				}
+			});
+			console.log("value")
+			console.log(mode)
+			return mode;
 		}
 
 	</script>
