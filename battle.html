@@ -211,12 +211,68 @@
 </body>
 
 <script type="module">
-    // Initialize packets.... Fetch from DB later
-    import packets from './data/packets.json' assert { type: 'json' };
-    console.log(packets);
 
-    // Initialize damage multipliers
-    import multipliers from './data/multiplier.json' assert { type: 'json' };
+// Async function to fetch a JSON file
+	async function fetchJson(url) {
+		try {
+			const response = await fetch(url);
+			if (!response.ok) {
+				throw new Error(`HTTP error! Status: ${response.status}`);
+			}
+			return await response.json();
+		} catch (error) {
+			console.error(`Error loading ${url}:`, error);
+			return null;
+		}
+	}
+
+	// Function to load multiple JSON files
+	async function loadData() {
+		// Define URLs for each JSON file
+		const urls = ['./data/packets.json', './data/multiplier.json', './data/items.json'];
+
+		// Fetch all JSON files in parallel
+		const [packets, multiplier, items] = await Promise.all(urls.map(url => fetchJson(url)));
+
+		// Return all the loaded data
+		return { packets, multiplier, items };
+	}
+
+	// Main initialization function
+	function initializeApp(data) {
+		const { packets, multiplier, items } = data;
+
+		// Check if all data is loaded
+		if (packets && multiplier && items) {
+			console.log("All data loaded:", { packets, multiplier, items });
+			// Your initialization code here, e.g.:
+			// initialize variables based on modes, enemies, items
+		} else {
+			console.error("Failed to load one or more JSON files");
+		}
+	}
+
+		
+	// Initialize packets.... Fetch from DB later
+	async function loadPackets() {
+		try {
+			// Fetch the JSON data
+			const response = await fetch('./data/packets.json');
+			if (!response.ok) {
+				throw new Error(`HTTP error! Status: ${response.status}`);
+			}
+			const packets = await response.json();
+			
+			return packets;
+		} catch (error) {
+			console.error('Error loading modes:', error);
+		}
+	}
+	
+	const packets = loadPackets();
+	
+	console.log(packets)
+    
 
     function getMultiplier(name, multipliers) {
         console.log(multipliers);
@@ -250,10 +306,8 @@
         $("#skill-4").text(player.skills[3].name + " - " + player.skills[3].sp).removeClass("text-red-400");;
     }
 
-    // Initialize damage multipliers
-    import items from './data/items.json' assert { type: 'json' };
 
-    function initializeItems() {
+    function initializeItems(items) {
         console.log(items.length);
         $.each(items, function (key, value) {
             console.log(key);
@@ -289,7 +343,7 @@
         });
     }
 
-    function getPacket(id) {
+    function getPacket(id, packets) {
         // const packets = initializePackets();
         console.log(" ---packets")
         console.log(packets)
@@ -379,7 +433,8 @@
         return id;
     }
 
-    function useSkill(id, player, currentEnemyHp, enemyHp) {
+    function useSkill(id, player, currentEnemyHp, enemyHp, multipliers) {
+    console.log(multipliers)
         // Multiplier
         const multiplier = getMultiplier(player.skills[id - 1].multiplier, multipliers);
         console.log("Get multiplier " + multiplier[0].value);
@@ -490,7 +545,19 @@
 
     }
 
-    $(document).ready(function () { // Initialize packets in play
+    $(document).ready(async function () { // Initialize packets in play
+    
+    console.log("init")
+    
+    
+		const data = await loadData(); // Load all JSON data
+		initializeApp(data);           // Initialize app with all data
+		
+		console.log(data);
+		
+		const packets = data.packets
+		const multipliers = data.multipliers
+		const items = data.items
 
         // TODO: Debuffs have 40% to hit				
         let debuffHit = .4;
@@ -498,7 +565,7 @@
         let damageOverTime = Math.ceil(10 / 2); // Reduce HP per turn								
         // Enemy				
         let selectedEnemy = getSelectedPacket("enemy")
-        let enemy = getPacket(selectedEnemy);
+        let enemy = getPacket(selectedEnemy, packets);
         // Loading HP				
         let enemyHp = enemy.hp;
         let currentEnemyHp = enemy.hp;
@@ -511,7 +578,13 @@
         $("#dialogue-text").html("A wild " + enemy.name + " appeared!");
         // Player
         let selectedPlayer = getSelectedPacket("player")
-        let player = getPacket(selectedPlayer);
+        console.log("aaaaaaaaaaaa")
+                console.log(selectedPlayer)
+        let player = getPacket(selectedPlayer, packets);
+        
+        console.log("player check")
+        console.log(player)
+        
         console.log(player.skills[0])
         console.log("player.skill")
         // Loading HP
@@ -528,7 +601,7 @@
         initializeSkills(player);
 
         // Init items
-        initializeItems();
+        initializeItems(items);
 
         // Dialogue window actions
         $("#dialogue").on("click", function (e) {
@@ -587,22 +660,29 @@
                 $("#restart-container").removeClass("hidden");
             }
         });
+        
+        console.log("multi")
+        console.log(data)
+        console.log(data.multiplier)
 
         // Activating skills in battle
         $("#skill-1").on("click", function (e) {
-            currentEnemyHp = useSkill(1, player, currentEnemyHp, enemyHp);
+                console.log("multi skill 1")
+        console.log(data)
+        console.log(data.multipliers)
+            currentEnemyHp = useSkill(1, player, currentEnemyHp, enemyHp, data.multiplier);
         });
 
         $("#skill-2").on("click", function (e) {
-            currentEnemyHp = useSkill(2, player, currentEnemyHp, enemyHp);
+            currentEnemyHp = useSkill(2, player, currentEnemyHp, enemyHp, data.multiplier);
         });
 
         $("#skill-3").on("click", function (e) {
-            currentEnemyHp = useSkill(3, player, currentEnemyHp, enemyHp);
+            currentEnemyHp = useSkill(3, player, currentEnemyHp, enemyHp, data.multiplier);
         });
 
         $("#skill-4").on("click", function (e) {
-            currentEnemyHp = useSkill(4, player, currentEnemyHp, enemyHp);
+            currentEnemyHp = useSkill(4, player, currentEnemyHp, enemyHp, data.multiplier);
         });
 
         // Using items in battle

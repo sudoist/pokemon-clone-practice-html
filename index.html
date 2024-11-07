@@ -35,10 +35,23 @@
 	<script type="module">
 
 		// Initialize modes.... Fetch from DB later
-		import modes from './data/modes.json';
-		console.log(modes);
-
-		listModes(modes);
+		async function loadModes() {
+			try {
+				// Fetch the JSON data
+				const response = await fetch('./data/modes.json');
+				if (!response.ok) {
+					throw new Error(`HTTP error! Status: ${response.status}`);
+				}
+				const modes = await response.json();
+				// Use the loaded modes data
+				console.log(modes);
+				listModes(modes);
+			} catch (error) {
+				console.error('Error loading modes:', error);
+			}
+		}
+		
+		loadModes();
 
 		function listModes(modes) {
 

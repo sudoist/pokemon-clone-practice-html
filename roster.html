@@ -34,14 +34,44 @@
 	</div>
 
 	<script type="module">
-
+		
+		// Initialize modes.... Fetch from DB later
+		async function loadModes() {
+			try {
+				// Fetch the JSON data
+				const response = await fetch('./data/modes.json');
+				if (!response.ok) {
+					throw new Error(`HTTP error! Status: ${response.status}`);
+				}
+				const modes = await response.json();
+				// Use the loaded modes data
+				console.log(modes);
+				listModes(modes);
+			} catch (error) {
+				console.error('Error loading modes:', error);
+			}
+		}
+		
+		loadModes();
+		
+		
 		// Initialize packets.... Fetch from DB later
-		import packets from './data/packets.json' assert { type: 'json' };
-		console.log(packets);
-
-		import modes from './data/modes.json' assert { type: 'json' };
-
-		listPackets(packets);
+		async function loadPackets() {
+			try {
+				// Fetch the JSON data
+				const response = await fetch('./data/packets.json');
+				if (!response.ok) {
+					throw new Error(`HTTP error! Status: ${response.status}`);
+				}
+				const packets = await response.json();
+				
+				listPackets(packets);
+			} catch (error) {
+				console.error('Error loading modes:', error);
+			}
+		}
+		
+		loadPackets();
 
 		// Initialize page
 		$(document).ready(function () {
